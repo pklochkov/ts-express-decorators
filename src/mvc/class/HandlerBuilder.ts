@@ -15,6 +15,7 @@ import {IHandlerScope} from "../interfaces/IHandlerScope";
 import {ControllerRegistry} from "../registries/ControllerRegistry";
 import {MiddlewareRegistry} from "../registries/MiddlewareRegistry";
 import {RouterController} from "../services/RouterController";
+import {ValidationService} from "../services/ValidationService";
 import {EndpointMetadata} from "./EndpointMetadata";
 import {HandlerMetadata} from "./HandlerMetadata";
 import {ParamMetadata} from "../../filters/class/ParamMetadata";
@@ -214,6 +215,7 @@ export class HandlerBuilder {
     private getInjectableParameters = (localScope: IHandlerScope = {} as IHandlerScope): any[] => {
         const converterService = InjectorService.get<ConverterService>(ConverterService);
         const filterService = InjectorService.get<FilterService>(FilterService);
+        const validationService = InjectorService.get<ValidationService>(ValidationService);
 
         return this.handlerMetadata
             .services
@@ -251,6 +253,8 @@ export class HandlerBuilder {
                     if (param.useConverter) {
                         const type = param.type || param.collectionType;
                         paramValue = converterService.deserialize(paramValue, type, param.collectionType);
+
+                        validationService.validate(paramValue, type, param.collectionType);
                     }
 
                 } catch (err) {

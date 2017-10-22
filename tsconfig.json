@@ -40,6 +40,7 @@
     "multipartfiles",
     "swagger",
     "servestatic",
+    "ajv",
     "lib"
   ]
 }
